@@ -8,13 +8,7 @@ import thread.TimerThread;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +26,31 @@ public class RentalPanel extends JPanel {
 
     private RentalDAO dao = new RentalDAO();
     private List<Device> devices;
-    private Map<String, RentalSession> activeSessions = new HashMap<>();
-    private Map<String, TimerThread>   activeTimers   = new HashMap<>();
+    private Map<String, RentalSession> activeSessions  = new HashMap<>();
+    private Map<String, TimerThread>   activeTimers    = new HashMap<>();
+    // epoch milidetik saat sewa mulai — dibagikan ke MonitoringPanel
+    private Map<String, Long>          sessionEpochs   = new HashMap<>();
 
-    private JTable deviceTable;
-    private DefaultTableModel tableModel;
-    private JTextField txtCustomer;
-    private JLabel lblTotal, lblDisewa, lblTersedia;
+    private JTable             deviceTable;
+    private DefaultTableModel  tableModel;
+    private JTextField         txtCustomer;
+    private JLabel             lblTotal, lblDisewa, lblTersedia;
 
+    // referensi ke MonitoringPanel agar bisa di-update
+    private MonitoringPanel monitoringPanel;
+
+    // ----------------------------------------------------------------
+    // Constructor lama (tanpa monitoring) — tetap kompatibel
+    // ----------------------------------------------------------------
     public RentalPanel() {
+        this(null);
+    }
+
+    // ----------------------------------------------------------------
+    // Constructor utama
+    // ----------------------------------------------------------------
+    public RentalPanel(MonitoringPanel monitoringPanel) {
+        this.monitoringPanel = monitoringPanel;
         setLayout(new BorderLayout(10, 10));
         setBackground(BG);
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
@@ -50,7 +60,7 @@ public class RentalPanel extends JPanel {
         add(buildButtons(), BorderLayout.SOUTH);
     }
 
-    // ------------------------------------------------------------------ FORM
+    // ---------------------------------------------------------------- FORM
     private JPanel buildForm() {
         JPanel wrap = new JPanel(new BorderLayout(0, 10));
         wrap.setBackground(BG);
@@ -212,6 +222,7 @@ public class RentalPanel extends JPanel {
 
             RentalSession session = new RentalSession(device, customer);
             activeSessions.put(device.getId(), session);
+            sessionEpochs.put(device.getId(), System.currentTimeMillis()); // catat epoch
 
             tableModel.setValueAt(customer,             row, 2);
             tableModel.setValueAt("DISEWA:" + customer, row, 3);
@@ -223,6 +234,7 @@ public class RentalPanel extends JPanel {
 
             txtCustomer.setText("");
             updateStats();
+            notifyMonitoring(); // beritahu monitoring panel
 
             JOptionPane.showMessageDialog(this,
                 "Sewa dimulai!\nPelanggan : " + customer +
@@ -254,6 +266,7 @@ public class RentalPanel extends JPanel {
             if (timer != null) timer.stopTimer();
             activeTimers.remove(device.getId());
             activeSessions.remove(device.getId());
+            sessionEpochs.remove(device.getId()); // hapus epoch
 
             tableModel.setValueAt("-",        row, 2);
             tableModel.setValueAt("TERSEDIA", row, 3);
@@ -261,6 +274,8 @@ public class RentalPanel extends JPanel {
             device.setAvailable(true);
 
             updateStats();
+            notifyMonitoring(); // beritahu monitoring panel
+
             JOptionPane.showMessageDialog(this,
                 "Sewa selesai!\n" +
                 "Pelanggan : " + session.getCustomerName() +
@@ -279,7 +294,6 @@ public class RentalPanel extends JPanel {
     private void refreshTable() {
         devices = dao.getAllDevices();
 
-        // hentikan timer untuk device yang tidak punya sesi aktif
         for (Device d : devices) {
             if (!activeSessions.containsKey(d.getId())) {
                 TimerThread t = activeTimers.get(d.getId());
@@ -319,6 +333,14 @@ public class RentalPanel extends JPanel {
         lblTotal.setText(String.valueOf(devices.size()));
         lblDisewa.setText(String.valueOf(disewa));
         lblTersedia.setText(String.valueOf(tersedia));
+    }
+
+    /** Kirim data epoch ke MonitoringPanel supaya durasi sewa bisa ditampilkan */
+    private void notifyMonitoring() {
+        if (monitoringPanel != null) {
+            monitoringPanel.updateSessionData(sessionEpochs);
+            monitoringPanel.refresh();
+        }
     }
 
     // ------------------------------------------------------------ RENDERERS

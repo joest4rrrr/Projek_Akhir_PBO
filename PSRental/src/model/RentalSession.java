@@ -26,6 +26,18 @@ public class RentalSession {
         device.setAvailable(true);
     }
 
+    /**
+     * Digunakan BookingPanel: set semua field secara manual
+     * tanpa bergantung pada LocalDateTime.now()
+     */
+    public void forceEnd(LocalDateTime start, LocalDateTime end,
+                         int durationMinutes, double totalCost) {
+        this.startTime       = start;
+        this.endTime         = end;
+        this.durationMinutes = durationMinutes;
+        this.totalCost       = totalCost;
+    }
+
     public int getId()                   { return id; }
     public void setId(int id)            { this.id = id; }
     public Device getDevice()            { return device; }
