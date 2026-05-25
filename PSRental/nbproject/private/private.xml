@@ -3,20 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/Main.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/gui/MainFrame.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/gui/RentalPanel.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/gui/HistoryPanel.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/database/DBConnection.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/database/RentalDAO.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/Rentable.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/Device.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/PS3.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/PS4.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/PS5.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/model/RentalSession.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/exception/RentalException.java</file>
-            <file>file:/C:/Users/asus/Documents/NetBeansProjects/PSRental/src/thread/TimerThread.java</file>
+            <file>file:/C:/Users/ACER/Documents/Projek_Akhir_PBO/PSRental/src/model/PS4.java</file>
         </group>
     </open-files>
 </project-private>
